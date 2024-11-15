@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 
 function Navbar() {
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const { logout, token } = useContext(AuthContext); // Get token from context
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleLogout = () => {
@@ -38,15 +38,26 @@ function Navbar() {
         </button>
       </form>
       <div className="space-x-4">
-        <Link to="/" className="hover:text-gray-400">Home</Link>
-        <Link to="/my-cars" className="hover:text-gray-400">My Cars</Link> {/* New My Cars link */}
-        <Link to="/add-car" className="hover:text-gray-400">Add Car</Link>
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-500 text-white p-2 rounded"
-        >
-          Logout
-        </button>
+        {token ? (
+          <>
+            <Link to="/" className="hover:text-gray-400">Home</Link>
+            <Link to="/my-cars" className="hover:text-gray-400">My Cars</Link> {/* My Cars link */}
+            <Link to="/add-car" className="hover:text-gray-400">Add Car</Link>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-500 text-white p-2 rounded"
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <Link
+            to="/login"
+            className="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded"
+          >
+            Login
+          </Link>
+        )}
       </div>
     </nav>
   );

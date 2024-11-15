@@ -1,20 +1,33 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import api from '../services/api';
 
 function Signup() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess(false);
+
     try {
-      await axios.post('/auth/signup', { username, email, password });
-      navigate('/login'); // Redirect to login after successful signup
-    } catch (error) {
-      console.error('Signup failed:', error);
+      await api.post('/auth/signup', { username: 
+        username.trim(),
+        email: email.trim(),
+        password, });
+        
+      setSuccess(true); // Indicate successful signup
+      setTimeout(() => {
+        navigate('/login'); // Redirect to login after a short delay
+      }, 2000);
+    } catch (err) {
+      console.error('Signup failed:', err);
+      setError('Signup failed. Please try again.');
     }
   };
 
@@ -25,6 +38,8 @@ function Signup() {
         className="bg-white p-8 rounded-lg shadow-md max-w-sm w-full"
       >
         <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
+        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+        {success && <p className="text-green-500 mb-4 text-center">Signup successful! Redirecting...</p>}
         <input
           type="text"
           value={username}
